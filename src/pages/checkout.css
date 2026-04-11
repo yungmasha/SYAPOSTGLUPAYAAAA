@@ -1,0 +1,130 @@
+.checkout-page__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 340px);
+  gap: 28px;
+  align-items: start;
+  margin-top: 16px;
+}
+
+@media (max-width: 900px) {
+  .checkout-page__layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.checkout-page__empty {
+  margin-top: 12px;
+  color: var(--text);
+}
+
+.checkout-form__fieldset {
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.checkout-form__legend {
+  padding: 0;
+  margin: 0 0 14px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-h);
+}
+
+.checkout-form__label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-h);
+}
+
+.checkout-form__input,
+.checkout-form__textarea,
+.checkout-form__select {
+  width: 100%;
+  margin-bottom: 14px;
+}
+
+.checkout-form__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.checkout-form__submit {
+  min-width: 180px;
+}
+
+.checkout-summary {
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg);
+  box-shadow: var(--shadow-card);
+}
+
+.checkout-summary__title {
+  margin: 0 0 14px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-h);
+}
+
+.checkout-summary__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.checkout-summary__item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto auto;
+  gap: 4px 12px;
+  font-size: 0.92rem;
+  color: var(--text);
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.checkout-summary__item:last-of-type {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.checkout-summary__name {
+  grid-column: 1 / -1;
+  font-weight: 500;
+  color: var(--text-h);
+}
+
+.checkout-summary__qty {
+  color: var(--text);
+}
+
+.checkout-summary__line {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-h);
+}
+
+.checkout-summary__total {
+  margin: 16px 0 0;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+  font-size: 1.05rem;
+  color: var(--text);
+}
+
+.checkout-summary__total strong {
+  color: var(--color-accent);
+}
+
+.checkout-page h1 {
+  margin-top: 0;
+}

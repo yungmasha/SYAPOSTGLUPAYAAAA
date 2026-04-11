@@ -1,0 +1,18 @@
+.favorites-page {
+  max-width: none;
+  width: 100%;
+  text-align: left;
+}
+
+.favorites-page__empty {
+  margin: 16px 0 0;
+  font-size: 1rem;
+  color: var(--text);
+}
+
+.favorites-page__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 18px;
+  margin-top: 24px;
+}
