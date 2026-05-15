@@ -1,293 +1,188 @@
 .home {
-  max-width: 1120px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-9);
+  max-width: 1200px;
   margin: 0 auto;
+  padding-bottom: var(--space-6);
 }
 
-.home__welcome {
-  margin-bottom: 24px;
+/* —— Sections —— */
+.home-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
 }
 
-.home__welcome h1 {
-  margin: 0 0 10px;
-  font-size: clamp(1.75rem, 4vw, 2.25rem);
-  font-weight: 600;
-  color: var(--text-h);
-}
-
-.home__welcome p {
-  margin: 0;
-  font-size: 1.05rem;
-  line-height: 1.5;
-  color: var(--text);
-  max-width: 42rem;
-}
-
-.home__banner {
-  position: relative;
-  min-height: 200px;
-  border-radius: 14px;
-  overflow: hidden;
-  margin-bottom: 28px;
-  border: 1px solid var(--border);
-  background: linear-gradient(
-    125deg,
-    var(--color-accent-soft) 0%,
-    var(--code-bg) 45%,
-    rgba(230, 57, 70, 0.12) 100%
-  );
-}
-
-.home__banner-inner {
-  padding: 32px 28px;
-  max-width: 28rem;
-}
-
-.home__banner-title {
-  margin: 0 0 10px;
-  font-size: 1.35rem;
-  font-weight: 600;
-  color: var(--text-h);
-}
-
-.home__banner-text {
-  margin: 0 0 18px;
-  font-size: 0.98rem;
-  line-height: 1.45;
-  color: var(--text);
-}
-
-.home__banner-link {
-  display: inline-flex;
-  align-items: center;
-  padding: 10px 18px;
-  font-size: 0.95rem;
-  font-weight: 500;
-  text-decoration: none;
-  color: #fff;
-  background: var(--color-accent);
-  border-radius: 8px;
-  transition:
-    filter 0.2s,
-    background 0.2s;
-}
-
-.home__banner-link:hover {
-  background: var(--color-accent-hover);
-}
-
-.home__banner-link:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 3px;
-}
-
-.home__section-title {
-  margin: 0 0 18px;
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: var(--text-h);
-}
-
-.home__grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 20px;
-}
-
-/* Общая «карточка» для блоков главной */
-.home .card-like {
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 20px 20px 22px;
-  box-shadow: var(--shadow-card);
-}
-
-.home__weather {
-  margin-bottom: 28px;
-}
-
-.home-weather h3 {
-  margin: 0 0 16px;
-  font-size: 1.15rem;
-  font-weight: 600;
-  color: var(--text-h);
-}
-
-.home-weather__loading {
-  margin: 0;
-  color: var(--text);
-}
-
-.home-weather__body {
+.home-section__head {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
-  gap: 20px 28px;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-4) var(--space-6);
 }
 
-.home-weather__big-icon {
-  flex-shrink: 0;
-  color: var(--color-accent);
+.home-section__title {
+  margin: 0;
+  font-size: clamp(1.25rem, 2vw, 1.5rem);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--text-h);
 }
 
-.home-weather__info {
-  flex: 1 1 220px;
-}
-
-.home-weather__temp {
-  margin: 0 0 8px;
-  font-size: 1.05rem;
+.home-section__lead {
+  margin: var(--space-2) 0 0;
+  max-width: 56ch;
+  font-size: 0.95rem;
+  line-height: 1.55;
   color: var(--text);
 }
 
-.home-weather__hint {
-  margin: 0 0 14px;
-  font-size: 1rem;
-  line-height: 1.45;
-  color: var(--text-h);
-}
-
-.home-weather__more {
-  margin-top: 4px;
-}
-
-.home__tire-calc {
-  margin: 28px 0;
-}
-
-.home__tire-calc h2 {
-  margin: 0 0 18px;
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: var(--text-h);
-}
-
-.home-tire-calc {
-  max-width: 480px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.home-tire-calc__row {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.home-tire-calc__label {
+.home-section__link {
+  flex-shrink: 0;
   font-size: 0.9rem;
   font-weight: 500;
-  color: var(--text-h);
+  color: var(--neon-orange);
+  white-space: nowrap;
 }
 
-.home-tire-calc__select {
-  font: inherit;
-  padding: 10px 12px;
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  background: var(--bg);
-  color: var(--text-h);
+.home-section__link:hover {
+  color: var(--neon-orange-hover);
 }
 
-.home-tire-calc__submit {
-  align-self: flex-start;
-  margin-top: 4px;
-}
-
-.home__help {
-  margin-bottom: 28px;
-}
-
-.home-help h2 {
-  margin: 0 0 12px;
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: var(--text-h);
-}
-
-.home-help__text {
-  margin: 0 0 16px;
-  line-height: 1.5;
-  color: var(--text);
-  max-width: 40rem;
-}
-
-.home-help__actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
-.home-help__actions a {
-  text-decoration: none;
-}
-
-.home__popular {
-  margin-bottom: 28px;
-}
-
-.home__map {
-  margin-bottom: 28px;
-}
-
-.home__map h2 {
-  margin: 0 0 8px;
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: var(--text-h);
-}
-
-.home-map__subtitle {
-  margin: 0 0 16px;
-  color: var(--text);
-  font-size: 1rem;
-}
-
-.home-map__frame-wrap {
-  border-radius: 12px;
-  overflow: hidden;
+.home-panel {
+  padding: var(--space-6);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  background: var(--bg-card);
+  background-color: var(--bg-card-solid);
   box-shadow: var(--shadow-card);
-  line-height: 0;
 }
 
-.home-map__frame-wrap iframe {
+/* —— Hits grid —— */
+.home-hits {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.home-hits__item {
+  min-width: 0;
+}
+
+.home-hits__item .product-card {
+  height: 100%;
+}
+
+/* —— Location —— */
+.home-location {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: var(--space-5);
+  align-items: stretch;
+}
+
+.home-location__map {
+  min-height: 320px;
+  padding: 0;
+  overflow: hidden;
+}
+
+.home-location__map iframe {
   display: block;
-  vertical-align: top;
+  width: 100%;
+  height: 100%;
+  min-height: 320px;
+  border: 0;
 }
 
-.home-map__meta {
-  margin: 14px 0 0;
+.home-location__info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.home-location__list {
+  margin: 0;
   padding: 0;
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  color: var(--text);
-  font-size: 0.98rem;
+  gap: var(--space-4);
 }
 
-.home__seo {
-  margin-bottom: 32px;
-}
-
-.home__seo-title {
-  margin: 0 0 14px;
-  font-size: 1.15rem;
-  font-weight: 600;
+.home-location__list li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  font-size: 0.95rem;
   color: var(--text-h);
 }
 
-.home-seo-text {
-  color: var(--text);
+.home-location__list svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: var(--neon-orange);
+}
+
+.home-location__list a {
+  color: var(--text-h);
+}
+
+.home-location__list a:hover {
+  color: var(--neon-orange);
+}
+
+.home-location__note {
+  margin: 0;
+  font-size: 0.9rem;
   line-height: 1.55;
-  font-size: 0.95rem;
+  color: var(--text);
 }
 
-.home-seo-text p {
-  margin: 0 0 12px;
+.home-location__btn {
+  margin-top: auto;
+  align-self: flex-start;
 }
 
-.home-seo-text p:last-child {
-  margin-bottom: 0;
+@media (max-width: 1024px) {
+  .home-hits {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .home-location {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .home {
+    gap: var(--space-8);
+  }
+
+  .home-panel {
+    padding: var(--space-4);
+  }
+
+  .home-section__head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 520px) {
+  .home-hits {
+    grid-template-columns: 1fr;
+  }
+
+  .home-hero__actions {
+    flex-direction: column;
+  }
+
+  .home-hero__actions .button {
+    width: 100%;
+  }
 }

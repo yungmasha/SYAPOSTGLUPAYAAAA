@@ -1,0 +1,5 @@
+export const STORE_PHONE = '+375 (29) 521-56-63'
+export const STORE_PHONE_TEL = '+375295215663'
+export const STORE_EMAIL = 'info@motohunters.by'
+export const STORE_HOURS = 'ежедневно 9:00–21:00'
+export const SITE_NAME = 'MotoHunters'

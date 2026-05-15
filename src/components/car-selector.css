@@ -1,0 +1,81 @@
+.car-selector {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.car-selector__title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-h);
+}
+
+.car-selector__fields {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+.car-selector__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.car-selector__field label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-h);
+}
+
+.car-selector__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.car-selector__result {
+  flex: 1 1 200px;
+  margin: 0;
+  font-size: 0.92rem;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.car-selector__result strong {
+  color: var(--text-h);
+}
+
+.car-selector__catalog-link {
+  font-weight: 500;
+}
+
+.car-selector--column .car-selector__fields {
+  grid-template-columns: 1fr;
+}
+
+.car-selector--column .car-selector__actions {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.car-selector--column .car-selector__actions .button {
+  width: 100%;
+}
+
+@media (max-width: 720px) {
+  .car-selector__fields {
+    grid-template-columns: 1fr;
+  }
+
+  .car-selector__actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .car-selector__actions .button {
+    width: 100%;
+  }
+}

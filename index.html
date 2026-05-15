@@ -1,13 +1,30 @@
 <!doctype html>
-<html lang="en">
+<html lang="ru">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" href="/iconka.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>my-app</title>
+    <meta name="theme-color" content="#0a0c10" />
+    <meta
+      name="description"
+      content="Шинный центр MotoHunters в Минске: летние и зимние шины, подбор по авто, доставка, бронирование без оплаты."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <title>MotoHunters — шинный центр</title>
   </head>
-  <body>
+  <body class="dark-theme">
+    <script>
+      (function () {
+        var t = localStorage.getItem('app-theme')
+        document.body.className = t === 'light' ? 'light-theme' : 'dark-theme'
+        var meta = document.querySelector('meta[name="theme-color"]')
+        if (meta) {
+          meta.setAttribute('content', t === 'light' ? '#e6e9f0' : '#0a0c10')
+        }
+      })()
+    </script>
     <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
+    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
