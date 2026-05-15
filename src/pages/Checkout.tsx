@@ -1,11 +1,17 @@
 import { useState, type FormEvent } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/authcontext'
-import { useCart } from '../contexts/cartcontext'
+import {
+  computeCartPricing,
+  useCart,
+} from '../contexts/cartcontext'
 import type { CartItem, CartPricing } from '../contexts/cartcontext'
+import { useOrders } from '../contexts/ordercontext'
 import { useToast } from '../contexts/toastcontext'
+import { PROMO_DISCOUNT_RATE } from '../utils/promo'
 import { usePageTitle } from '../hooks/usePageTitle'
 import { formatByn } from '../utils/currency'
+import { normalizeEmail } from '../utils/email'
 import './checkout.css'
 
 const PAYMENT_OPTIONS = [
@@ -20,6 +26,7 @@ export default function Checkout() {
   const navigate = useNavigate()
   const { user } = useAuth()
   const { clearCart } = useCart()
+  const { addOrder } = useOrders()
   const { showToast } = useToast()
 
   const payload = location.state as
@@ -38,7 +45,7 @@ export default function Checkout() {
   const [fullName, setFullName] = useState(user?.fullName ?? '')
   const [phone, setPhone] = useState(user?.phone ?? '')
   const [email, setEmail] = useState(user?.email ?? '')
-  const [address, setAddress] = useState('')
+  const [address, setAddress] = useState(user?.address ?? '')
   const [payment, setPayment] = useState('card')
   const [comment, setComment] = useState('')
 
@@ -48,9 +55,49 @@ export default function Checkout() {
       showToast('Заполните обязательные поля: ФИО, телефон, адрес', 'error')
       return
     }
-    showToast('Заказ оформлен! Спасибо за покупку')
+    const resolvedEmail = normalizeEmail(user?.email || email || '')
+    if (!resolvedEmail) {
+      showToast('Укажите email для сохранения заказа в профиле', 'error')
+      return
+    }
+    const pricing =
+      orderPricing ??
+      computeCartPricing(cartItems, {
+        promoDiscountRate: appliedPromo ? PROMO_DISCOUNT_RATE : 0,
+      })
+    const paymentLabel =
+      PAYMENT_OPTIONS.find((opt) => opt.value === payment)?.label ?? payment
+
+    addOrder({
+      userEmail: resolvedEmail,
+      customer: {
+        fullName: fullName.trim(),
+        phone: phone.trim(),
+        email: resolvedEmail,
+        address: address.trim(),
+        payment: paymentLabel,
+        comment: comment.trim(),
+      },
+      appliedPromo,
+      items: cartItems.map(({ product, quantity }) => ({
+        productId: product.id,
+        title: `${product.brand} ${product.name}`,
+        quantity,
+        unitPrice: product.price,
+        lineTotal: product.price * quantity,
+      })),
+      pricing: {
+        subtotal: pricing.subtotal,
+        deliveryFinal: pricing.deliveryFinal,
+        bundleDiscount: pricing.bundleDiscount,
+        promoDiscount: pricing.promoDiscount,
+        totalToPay: pricing.totalToPay,
+      },
+    })
+
+    showToast('Заказ оформлен! История доступна в профиле')
     clearCart()
-    navigate('/', { replace: true })
+    navigate(user ? '/profile' : '/', { replace: true })
   }
 
   if (!Array.isArray(cartItems) || cartItems.length === 0) {

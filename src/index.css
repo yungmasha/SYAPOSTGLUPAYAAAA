@@ -181,7 +181,6 @@ body.light-theme textarea::placeholder {
   opacity: 1;
 }
 
-body.light-theme .breadcrumbs,
 body.light-theme .page__meta {
   color: var(--text-muted);
 }
@@ -610,15 +609,6 @@ input[type='range'] {
 
 .shadow { box-shadow: var(--shadow-card); }
 .shadow-lg { box-shadow: var(--shadow-card-hover); }
-
-.breadcrumbs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 24px;
-  font-size: 0.88rem;
-  color: var(--color-text-muted);
-}
 
 .error-message {
   color: var(--neon-orange);

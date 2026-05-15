@@ -37,7 +37,7 @@
 }
 
 .car-selector__result {
-  flex: 1 1 200px;
+  flex: 0 1 auto;
   margin: 0;
   font-size: 0.92rem;
   color: var(--text);
@@ -77,5 +77,13 @@
 
   .car-selector__actions .button {
     width: 100%;
+  }
+}
+
+/* Рядом с кнопкой на главной: текст может занимать оставшуюся ширину */
+@media (min-width: 721px) {
+  .car-selector:not(.car-selector--column) .car-selector__result {
+    flex: 1 1 200px;
+    min-width: 0;
   }
 }

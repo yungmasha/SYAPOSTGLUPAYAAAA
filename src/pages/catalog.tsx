@@ -8,7 +8,6 @@ import {
 import { Link, useSearchParams } from 'react-router-dom'
 import { tires } from '../data/tires'
 import type { Tire } from '../types/tire'
-import Breadcrumbs from '../components/Breadcrumbs'
 import CarSelector from '../components/CarSelector'
 import CatalogSkeleton from '../components/CatalogSkeleton'
 import ProductCard from '../components/productcard'
@@ -18,6 +17,19 @@ import { formatByn } from '../utils/currency'
 import './catalog.css'
 
 const ITEMS_PER_PAGE = 15
+const VISIBLE_PAGE_BUTTONS = 3
+
+function getPaginationPages(current: number, total: number): number[] {
+  if (total <= 0) return []
+  if (total <= VISIBLE_PAGE_BUTTONS) {
+    return Array.from({ length: total }, (_, i) => i + 1)
+  }
+  const start = Math.min(
+    Math.max(1, current - 1),
+    total - VISIBLE_PAGE_BUTTONS + 1,
+  )
+  return Array.from({ length: VISIBLE_PAGE_BUTTONS }, (_, i) => start + i)
+}
 
 const RIM_OPTIONS = [
   'R13',
@@ -207,20 +219,13 @@ export default function Catalog() {
 
   const formatPrice = (n: number) => formatByn(n)
 
-  const pageNumbers = useMemo(
-    () =>
-      totalPages > 0 ? Array.from({ length: totalPages }, (_, i) => i + 1) : [],
-    [totalPages],
+  const visiblePaginationPages = useMemo(
+    () => getPaginationPages(safePage, totalPages),
+    [safePage, totalPages],
   )
 
   return (
     <section className="page page--catalog catalog">
-      <Breadcrumbs
-        items={[
-          { label: 'Главная', to: '/' },
-          { label: 'Каталог' },
-        ]}
-      />
       <h1>Каталог</h1>
       <div className="catalog__layout">
         <aside className="catalog__filters" aria-label="Фильтры каталога">
@@ -356,27 +361,28 @@ export default function Catalog() {
 
         <div className="catalog__main">
           <div className="catalog__toolbar">
-            <div className="catalog__toolbar-left">
-              <p className="catalog__count">Найдено товаров: {totalCount}</p>
-              {canCompare && (
-                <Link to="/compare" className="button secondary">
-                  Сравнить выбранные ({compareItems.length})
-                </Link>
-              )}
-              <label className="catalog__search-label" htmlFor="catalog-search">
-                Поиск
-              </label>
-              <input
-                id="catalog-search"
-                type="search"
-                className="catalog__search-input"
-                placeholder="Бренд или модель шины"
-                value={searchQuery}
-                onChange={onSearchChange}
-                autoComplete="off"
-              />
-            </div>
-            <div className="catalog__sort">
+            {canCompare && (
+              <Link to="/compare" className="button secondary catalog__compare-bar">
+                Сравнить выбранные ({compareItems.length})
+              </Link>
+            )}
+            <div className="catalog__toolbar-row">
+              <div className="catalog__toolbar-left">
+                <p className="catalog__count">Найдено товаров: {totalCount}</p>
+                <label className="catalog__search-label" htmlFor="catalog-search">
+                  Поиск
+                </label>
+                <input
+                  id="catalog-search"
+                  type="search"
+                  className="catalog__search-input"
+                  placeholder="Бренд или модель шины"
+                  value={searchQuery}
+                  onChange={onSearchChange}
+                  autoComplete="off"
+                />
+              </div>
+              <div className="catalog__sort">
               <label htmlFor="catalog-sort">Сортировка</label>
               <select
                 id="catalog-sort"
@@ -389,6 +395,7 @@ export default function Catalog() {
                   </option>
                 ))}
               </select>
+            </div>
             </div>
           </div>
 
@@ -418,7 +425,8 @@ export default function Catalog() {
           {!loading && totalCount > 0 && totalPages > 1 && (
             <nav className="catalog__pagination" aria-label="Страницы каталога">
               <p className="catalog__pagination-summary">
-                Показано {rangeFrom}–{rangeTo} из {totalCount} товаров
+                Показано {rangeFrom}–{rangeTo} из {totalCount} товаров · Страница{' '}
+                {safePage} из {totalPages}
               </p>
               <div className="catalog__pagination-row">
                 <button
@@ -429,7 +437,7 @@ export default function Catalog() {
                 >
                   Назад
                 </button>
-                {pageNumbers.map((num) => (
+                {visiblePaginationPages.map((num) => (
                   <button
                     key={num}
                     type="button"

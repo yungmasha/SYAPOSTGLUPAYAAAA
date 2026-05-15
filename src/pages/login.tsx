@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/authcontext'
 import { useToast } from '../contexts/toastcontext'
 import { usePageTitle } from '../hooks/usePageTitle'
@@ -7,7 +7,7 @@ import './login.css'
 
 export default function Login() {
   usePageTitle('Вход')
-  const { login } = useAuth()
+  const { login, user, isAuthReady } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
   const { showToast } = useToast()
@@ -18,6 +18,18 @@ export default function Login() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [submitting, setSubmitting] = useState(false)
+
+  if (!isAuthReady) {
+    return (
+      <section className="page login-page">
+        <p>Загрузка…</p>
+      </section>
+    )
+  }
+
+  if (user) {
+    return <Navigate to={redirectTo} replace />
+  }
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()

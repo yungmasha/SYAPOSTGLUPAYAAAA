@@ -13,6 +13,11 @@ const SIZE_PRESETS = [
   ['235/55 R18', '255/45 R19'],
 ] as const
 
+/** Размеры из подбора по авто — в каталоге должны быть шины с этими size для фильтра по URL */
+export const CAR_SELECTOR_TIRE_SIZES = Array.from(
+  new Set(SIZE_PRESETS.flat() as readonly string[]),
+)
+
 const MODELS_BY_BRAND: Record<string, string[]> = {
   Toyota: ['Camry', 'Corolla', 'RAV4', 'Land Cruiser', 'C-HR'],
   Hyundai: ['Solaris', 'Creta', 'Elantra', 'Tucson', 'Santa Fe'],

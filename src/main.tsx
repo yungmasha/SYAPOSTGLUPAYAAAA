@@ -6,6 +6,7 @@ import { BookingProvider } from './contexts/bookingcontext'
 import { CompareProvider } from './contexts/comparecontext'
 import { FavoritesProvider } from './contexts/favoritescontext'
 import { AuthProvider } from './contexts/authcontext'
+import { OrderProvider } from './contexts/ordercontext'
 import { ThemeProvider } from './contexts/ThemeContext'
 import { ToastProvider } from './contexts/toastcontext'
 import './index.css'
@@ -19,6 +20,7 @@ ReactDOM.createRoot(rootEl).render(
     <ThemeProvider>
       <ToastProvider>
         <AuthProvider>
+          <OrderProvider>
           <BookingProvider>
             <CompareProvider>
               <CartProvider>
@@ -28,6 +30,7 @@ ReactDOM.createRoot(rootEl).render(
               </CartProvider>
             </CompareProvider>
           </BookingProvider>
+          </OrderProvider>
         </AuthProvider>
       </ToastProvider>
     </ThemeProvider>

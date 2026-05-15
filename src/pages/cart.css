@@ -449,8 +449,22 @@
 
 .cart-page__promo-row {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--space-2);
   align-items: stretch;
+}
+
+.cart-page__promo-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-items: stretch;
+  flex-shrink: 0;
+}
+
+.cart-page__promo-buttons .cart-page__promo-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
 }
 
 .cart-page__promo-input {

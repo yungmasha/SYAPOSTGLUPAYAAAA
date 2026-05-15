@@ -1,5 +1,6 @@
-/** Каталог шин: rim — диаметр обода для фильтра (R13–R20). Цены в BYN (пересчёт из ₽ ~1 BYN ≈ 30 ₽). */
+/** Каталог шин: rim — диаметр обода для фильтра (R13–R20). Цены в BYN (пересчёт из ₽ ~1 BYN ≈ 30 ₽). Итоговый список — по 50 уникальных позиций на бренд (сиды + доп. до квоты). */
 import type { Tire } from '../types/tire'
+import { CAR_SELECTOR_TIRE_SIZES } from './carsData'
 
 const TIRE_IMAGE =
   'https://images.unsplash.com/photo-1617521652343-077e3450da07?auto=format&fit=crop&w=400&q=80'
@@ -488,50 +489,143 @@ const EXTRA_BRANDS = [
 ] as const
 
 const EXTRA_SEASONS = ['Лето', 'Зима', 'Всесезон'] as const
-const EXTRA_RIMS = ['R14', 'R15', 'R16', 'R17', 'R18', 'R19', 'R20'] as const
-const EXTRA_SIZES: Record<string, string> = {
-  R14: '185/65 R14',
-  R15: '195/65 R15',
-  R16: '205/55 R16',
-  R17: '225/45 R17',
-  R18: '235/45 R18',
-  R19: '255/40 R19',
-  R20: '275/35 R20',
+
+/** Дополнительные типоразмеры для покрытия фильтров R13–R20 и разнообразия каталога */
+const EXTRA_SIZE_VARIANTS = [
+  '175/70 R13',
+  '185/70 R13',
+  '185/60 R14',
+  '185/65 R14',
+  '195/60 R15',
+  '195/65 R15',
+  '205/50 R15',
+  '215/55 R16',
+  '215/60 R16',
+  '215/65 R16',
+  '215/70 R16',
+  '225/55 R16',
+  '225/50 R17',
+  '235/50 R17',
+  '235/55 R17',
+  '245/45 R18',
+  '235/60 R18',
+  '255/55 R18',
+  '265/50 R20',
+  '275/40 R20',
+  '255/35 R19',
+  '255/45 R19',
+  '255/50 R19',
+  '265/70 R17',
+  '245/70 R16',
+] as const
+
+const SIZE_POOL = Array.from(
+  new Set<string>([...CAR_SELECTOR_TIRE_SIZES, ...EXTRA_SIZE_VARIANTS]),
+).sort((a, b) => a.localeCompare(b, 'ru'))
+
+function rimFromSize(size: string): string {
+  const m = size.match(/R\d{2}$/)
+  return m ? m[0] : 'R16'
 }
 
-function buildExtraTires(startId: number, targetTotal: number): Tire[] {
-  const extras: Tire[] = []
-  let id = startId
+const EXTRA_MODEL_LINES = [
+  'RoadComfort',
+  'CityGrip',
+  'SnowAce',
+  'TrailPro',
+  'EcoTour',
+  'SportLine',
+  'WinterMax',
+  'AllTour',
+  'GripPlus',
+  'QuietRide',
+  'IceControl',
+  'RainSport',
+  'HighLoad',
+  'Touring+',
+  '4x4Grip',
+] as const
 
-  while (tireSeeds.length + extras.length < targetTotal) {
-    const brand = EXTRA_BRANDS[extras.length % EXTRA_BRANDS.length]
-    const season = EXTRA_SEASONS[extras.length % EXTRA_SEASONS.length]
-    const rim = EXTRA_RIMS[extras.length % EXTRA_RIMS.length]
-    const size = EXTRA_SIZES[rim]
-    const price = 120 + ((extras.length * 17) % 620)
+const TIRES_PER_BRAND = 50
 
-    extras.push({
-      id,
-      name: `${brand} ${season} ${rim}`,
-      brand,
-      season,
-      rim,
-      size,
-      price,
-      image: TIRE_IMAGE,
-      description: `Демонстрационная позиция каталога: ${season.toLowerCase()} шина ${size}.`,
-      quantity: 8,
-    })
+function makeSyntheticTire(
+  id: number,
+  brand: string,
+  size: string,
+  season: string,
+  variant: number,
+): Tire {
+  const rim = rimFromSize(size)
+  const line = EXTRA_MODEL_LINES[variant % EXTRA_MODEL_LINES.length]
+  const price = 120 + ((variant * 53 + id * 7) % 601)
+  return {
+    id,
+    name: `${brand} ${line} · ${size}`,
+    brand,
+    season,
+    rim,
+    size,
+    price,
+    image: TIRE_IMAGE,
+    description: `${line}: ${season.toLowerCase()} шина ${size} для легковых автомобилей.`,
+    quantity: 8,
+  }
+}
 
-    id += 1
+/** Ровно TIRES_PER_BRAND уникальных (размер+сезон) шин на каждый бренд; сиды сохраняют свои id. */
+function buildCatalogByBrandQuota(): Tire[] {
+  const brandList = [
+    ...new Set<string>([
+      ...tireSeeds.map((t) => t.brand),
+      ...EXTRA_BRANDS,
+    ]),
+  ].sort((a, b) => a.localeCompare(b, 'ru'))
+
+  let nextId = Math.max(...tireSeeds.map((t) => t.id)) + 1
+  const out: Tire[] = []
+
+  for (const brand of brandList) {
+    const seedRows = tireSeeds
+      .filter((t) => t.brand === brand)
+      .sort((a, b) => a.id - b.id)
+
+    const usedPairs = new Set(
+      seedRows.map((t) => `${t.size}\u0000${t.season}`),
+    )
+
+    const block: Tire[] = []
+
+    if (seedRows.length >= TIRES_PER_BRAND) {
+      block.push(...seedRows.slice(0, TIRES_PER_BRAND))
+    } else {
+      block.push(...seedRows)
+      let variant = 0
+      for (const season of EXTRA_SEASONS) {
+        if (block.length >= TIRES_PER_BRAND) break
+        for (const size of SIZE_POOL) {
+          if (block.length >= TIRES_PER_BRAND) break
+          const key = `${size}\u0000${season}`
+          if (usedPairs.has(key)) continue
+          usedPairs.add(key)
+          block.push(
+            makeSyntheticTire(nextId, brand, size, season, variant),
+          )
+          nextId += 1
+          variant += 1
+        }
+      }
+
+      if (block.length < TIRES_PER_BRAND) {
+        throw new Error(
+          `tires: для бренда «${brand}» не хватает уникальных пар размер+сезон: ${block.length} < ${TIRES_PER_BRAND}`,
+        )
+      }
+    }
+
+    out.push(...block)
   }
 
-  return extras
+  return out
 }
 
-const TARGET_CATALOG_ITEMS = 150
-
-export const tires: Tire[] = [
-  ...tireSeeds,
-  ...buildExtraTires(tireSeeds.length + 1, TARGET_CATALOG_ITEMS),
-]
+export const tires: Tire[] = buildCatalogByBrandQuota()

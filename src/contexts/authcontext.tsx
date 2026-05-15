@@ -7,6 +7,7 @@ import {
   useState,
   type ReactNode,
 } from 'react'
+import { normalizeEmail } from '../utils/email'
 import {
   createPromoForEmail,
   getPromoForEmail,
@@ -16,13 +17,16 @@ export type AuthUser = {
   email: string
   fullName: string
   phone: string
+  address: string
   promoCode: string
 }
 
-type ProfileUpdate = Partial<Pick<AuthUser, 'fullName' | 'phone'>>
+type ProfileUpdate = Partial<Pick<AuthUser, 'fullName' | 'phone' | 'address'>>
 
 type AuthContextValue = {
   user: AuthUser | null
+  /** false до чтения сессии из localStorage */
+  isAuthReady: boolean
   login: (email: string, password: string) => Promise<void>
   logout: () => void
   register: (email: string, password: string) => Promise<void>
@@ -35,7 +39,7 @@ const STORAGE_KEY = 'tire-shop-auth-user'
 
 function normalizeUser(raw: unknown): AuthUser | null {
   if (!raw || typeof raw !== 'object' || !('email' in raw)) return null
-  const email = String((raw as { email: unknown }).email ?? '').trim()
+  const email = normalizeEmail(String((raw as { email: unknown }).email ?? ''))
   if (!email) return null
   const fullName =
     'fullName' in raw && typeof (raw as { fullName: unknown }).fullName === 'string'
@@ -45,12 +49,16 @@ function normalizeUser(raw: unknown): AuthUser | null {
     'phone' in raw && typeof (raw as { phone: unknown }).phone === 'string'
       ? (raw as { phone: string }).phone.trim()
       : ''
+  const address =
+    'address' in raw && typeof (raw as { address: unknown }).address === 'string'
+      ? (raw as { address: string }).address.trim()
+      : ''
   const storedPromo =
     'promoCode' in raw && typeof (raw as { promoCode: unknown }).promoCode === 'string'
       ? (raw as { promoCode: string }).promoCode.trim().toUpperCase()
       : ''
   const promoCode = storedPromo || getPromoForEmail(email) || ''
-  return { email, fullName, phone, promoCode }
+  return { email, fullName, phone, address, promoCode }
 }
 
 function readUserFromStorage(): AuthUser | null {
@@ -100,33 +108,34 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = useCallback(async (email: string, password: string) => {
     await delay(450)
-    const e = String(email ?? '').trim()
+    const e = normalizeEmail(String(email ?? ''))
     const p = String(password ?? '').trim()
     if (!e || !p) {
       throw new Error('Укажите email и пароль')
     }
     const existing = readUserFromStorage()
+    const sameAccount =
+      existing && normalizeEmail(existing.email) === e
     const promoCode =
       getPromoForEmail(e) ??
-      ((existing?.email === e ? existing.promoCode : '') ||
-        createPromoForEmail(e))
+      ((sameAccount ? existing.promoCode : '') || createPromoForEmail(e))
 
-    if (existing?.email === e) {
+    if (sameAccount && existing) {
       setUser({ ...existing, email: e, promoCode })
     } else {
-      setUser({ email: e, fullName: '', phone: '', promoCode })
+      setUser({ email: e, fullName: '', phone: '', address: '', promoCode })
     }
   }, [])
 
   const register = useCallback(async (email: string, password: string) => {
     await delay(450)
-    const e = String(email ?? '').trim()
+    const e = normalizeEmail(String(email ?? ''))
     const p = String(password ?? '').trim()
     if (!e || !p) {
       throw new Error('Укажите email и пароль')
     }
     const promoCode = createPromoForEmail(e)
-    setUser({ email: e, fullName: '', phone: '', promoCode })
+    setUser({ email: e, fullName: '', phone: '', address: '', promoCode })
   }, [])
 
   const logout = useCallback(() => {
@@ -142,6 +151,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         fullName:
           data.fullName !== undefined ? data.fullName.trim() : prev.fullName,
         phone: data.phone !== undefined ? data.phone.trim() : prev.phone,
+        address:
+          data.address !== undefined ? data.address.trim() : prev.address,
       }
     })
   }, [])
@@ -149,12 +160,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const value = useMemo(
     () => ({
       user,
+      isAuthReady: hydrated,
       login,
       logout,
       register,
       updateProfile,
     }),
-    [user, login, logout, register, updateProfile],
+    [user, hydrated, login, logout, register, updateProfile],
   )
 
   return (

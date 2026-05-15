@@ -11,7 +11,6 @@ import {
 } from '../contexts/cartcontext'
 import { useBooking } from '../contexts/bookingcontext'
 import { useFavorites } from '../contexts/favoritescontext'
-import Breadcrumbs from '../components/Breadcrumbs'
 import ProductCard from '../components/productcard'
 import { useToast } from '../contexts/toastcontext'
 import { usePageTitle } from '../hooks/usePageTitle'
@@ -151,14 +150,6 @@ export default function ProductDetail() {
 
   return (
     <section className="page page--detail product-detail">
-      <Breadcrumbs
-        items={[
-          { label: 'Главная', to: '/' },
-          { label: 'Каталог', to: '/catalog' },
-          { label: fullTitle },
-        ]}
-      />
-
       <div className="product-detail__grid">
         <div className="product-detail__main-info">
           <figure className="product-detail__media">

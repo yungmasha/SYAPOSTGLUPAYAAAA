@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from 'react'
+import { useMemo, useState, useEffect, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/authcontext'
 import {
@@ -117,16 +117,30 @@ export default function Cart() {
   const handleApplyPromo = () => {
     const code = promoInput.trim().toUpperCase()
     if (!code) {
-      setAppliedPromo(null)
-      showToast('Промокод снят', 'info')
+      showToast('Введите промокод', 'error')
+      return
+    }
+    if (code.length !== 8) {
+      showToast('Промокод — 8 символов', 'error')
+      return
+    }
+    if (appliedPromo === code) {
+      showToast('Этот промокод уже активен', 'info')
       return
     }
     if (!isValidPromoCode(code)) {
       showToast('Промокод не найден', 'error')
+      if (appliedPromo) setPromoInput(appliedPromo)
       return
     }
     setAppliedPromo(code)
+    setPromoInput(code)
     showToast('Промокод применён: скидка 10%')
+  }
+
+  const handlePromoFormSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    handleApplyPromo()
   }
 
   const handleRemovePromo = () => {
@@ -272,7 +286,10 @@ export default function Cart() {
                   </button>
                 </p>
               )}
-              <div className="cart-page__promo-row">
+              <form
+                className="cart-page__promo-row"
+                onSubmit={handlePromoFormSubmit}
+              >
                 <input
                   id="cart-promo"
                   type="text"
@@ -287,24 +304,20 @@ export default function Cart() {
                   autoComplete="off"
                   spellCheck={false}
                 />
-                {appliedPromo ? (
+                <div className="cart-page__promo-buttons">
+                  <button type="submit" className="button cart-page__promo-btn">
+                    Применить
+                  </button>
                   <button
                     type="button"
                     className="button secondary cart-page__promo-btn"
+                    disabled={!appliedPromo}
                     onClick={handleRemovePromo}
                   >
                     Сбросить
                   </button>
-                ) : (
-                  <button
-                    type="button"
-                    className="button cart-page__promo-btn"
-                    onClick={handleApplyPromo}
-                  >
-                    Применить
-                  </button>
-                )}
-              </div>
+                </div>
+              </form>
               {appliedPromo && (
                 <p className="cart-page__promo-applied" role="status">
                   Активен: {appliedPromo} (−10%)

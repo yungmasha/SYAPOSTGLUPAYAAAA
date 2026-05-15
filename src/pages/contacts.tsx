@@ -109,10 +109,10 @@ export default function Contacts() {
           </label>
           <textarea
             id="feedback-message"
-            rows={5}
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             required
+            placeholder="Текст сообщения"
           />
 
           <button type="submit" className="button contacts-form__submit">
